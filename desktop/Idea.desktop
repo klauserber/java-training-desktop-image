@@ -1,0 +1,17 @@
+[Desktop Entry]
+Comment[en_US]=
+Comment=
+Exec=/opt/idea/bin/idea.sh
+GenericName[en_US]=
+GenericName=
+Icon=/opt/idea/bin/idea.svg
+MimeType=
+Name[en_US]=IDEA IntelliJ
+Name=IDEA IntelliJ
+Path=
+StartupNotify=true
+Terminal=false
+TerminalOptions=
+Type=Application
+X-KDE-SubstituteUID=false
+X-KDE-Username=

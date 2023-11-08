@@ -1,0 +1,15 @@
+network:
+  protocol: http
+  ssl:
+    require_ssl: false
+  udp:
+    public_ip: 127.0.0.1
+encoding:
+  video_encoding_mode:
+    max_resolution:
+      width: 3840
+      height: 2160
+command_line:
+  prompt: false
+keyboard:
+  raw_keyboard: true

@@ -1,0 +1,17 @@
+[Desktop Entry]
+Comment[en_US]=
+Comment=
+Exec=/bin/google-chrome
+GenericName[en_US]=
+GenericName=
+Icon=google-chrome
+MimeType=
+Name[en_US]=Chrome
+Name=Chrome
+Path=
+StartupNotify=true
+Terminal=false
+TerminalOptions=
+Type=Application
+X-KDE-SubstituteUID=false
+X-KDE-Username=
