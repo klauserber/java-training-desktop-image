@@ -1,6 +1,6 @@
-# FROM ubuntu:mantic-20231011
+FROM ubuntu:mantic-20231011
 # FROM ubuntu:focal-20231003
-FROM debian:bookworm-20231030
+# FROM debian:bookworm-20231030
 
 ARG TARGETARCH=amd64
 ARG TARGETOS=linux
@@ -107,36 +107,54 @@ RUN set -e; \
   apt-get update && DEBIAN_FRONTEND="noninteractive" TZ="Europe/Berlin" apt-get install -y ./chrome.deb; \
   rm chrome.deb && rm -rf /var/lib/apt/lists/*
 
-# Install spring tool suite
-# https://spring.io/tools
-RUN set -e; \
-  cd /tmp; \
-  wget -O spring-tool-suite.tar.gz https://cdn.spring.io/spring-tools/release/STS4/4.20.1.RELEASE/dist/e4.29/spring-tool-suite-4-4.20.1.RELEASE-e4.29.0-linux.gtk.x86_64.tar.gz; \
-  tar xzf spring-tool-suite.tar.gz; \
-  mv sts-4.20.1.RELEASE /opt/sts; \
-  rm spring-tool-suite.tar.gz
 
-# Instell intellij
-# https://www.jetbrains.com/idea/download/#section=linux
+# Install pgadmin
+RUN set -e; \
+  curl -fsS https://www.pgadmin.org/static/packages_pgadmin_org.pub | sudo gpg --dearmor -o /usr/share/keyrings/packages-pgadmin-org.gpg; \
+  sh -c 'echo "deb [signed-by=/usr/share/keyrings/packages-pgadmin-org.gpg] https://ftp.postgresql.org/pub/pgadmin/pgadmin4/apt/lunar pgadmin4 main" > /etc/apt/sources.list.d/pgadmin4.list'; \
+  apt-get update && DEBIAN_FRONTEND="noninteractive" TZ="Europe/Berlin" apt-get install -y pgadmin4-desktop; \
+  rm -rf /var/lib/apt/lists/*
+
+# Install postman
 RUN set -e; \
   cd /tmp; \
-  wget -O idea.tar.gz https://download.jetbrains.com/idea/ideaIU-2023.2.4.tar.gz; \
-  tar xzf idea.tar.gz; \
-  mv idea-* /opt/idea; \
-  rm idea.tar.gz
+  wget -O postman.tar.gz https://dl.pstmn.io/download/latest/linux64; \
+  tar xzf postman.tar.gz; \
+  mv Postman /opt/; \
+  rm postman.tar.gz
+
+# # Install spring tool suite
+# # https://spring.io/tools
+# RUN set -e; \
+#   cd /tmp; \
+#   wget -O spring-tool-suite.tar.gz https://cdn.spring.io/spring-tools/release/STS4/4.20.1.RELEASE/dist/e4.29/spring-tool-suite-4-4.20.1.RELEASE-e4.29.0-linux.gtk.x86_64.tar.gz; \
+#   tar xzf spring-tool-suite.tar.gz; \
+#   mv sts-4.20.1.RELEASE /opt/sts; \
+#   rm spring-tool-suite.tar.gz
+
+# # Instell intellij
+# # https://www.jetbrains.com/idea/download/#section=linux
+# # https://download.jetbrains.com/idea/ideaIC-2023.2.5.tar.gz
+# RUN set -e; \
+#   cd /tmp; \
+#   wget -O idea.tar.gz https://download.jetbrains.com/idea/ideaIU-2023.2.4.tar.gz; \
+#   tar xzf idea.tar.gz; \
+#   mv idea-* /opt/idea; \
+#   rm idea.tar.gz
 
 COPY helpers /helpers
-COPY run_kasmvnc.sh /usr/local/bin/run_kasmvnc.sh
 
-RUN useradd ${USER} \
+COPY run_kasmvnc.sh /usr/local/bin/run_kasmvnc.sh
+COPY kasmvnc.yaml /etc/kasmvnc/kasmvnc.yaml
+
+RUN userdel -r ubuntu || true && \
+    useradd ${USER} \
       --create-home \
       --shell=/bin/bash \
       --uid=1000 \
       --groups=ssl-cert \
       --user-group && \
       echo "${USER} ALL=(ALL) NOPASSWD:ALL" >>/etc/sudoers.d/nopasswd
-
-COPY kasmvnc.yaml /etc/kasmvnc/kasmvnc.yaml
 
 COPY bashrc.sh /tmp/
 RUN set -e; \
@@ -147,8 +165,8 @@ ENV LC_ALL=C.UTF-8
 ENV LANG=C.UTF-8
 ENV LANGUAGE=en_US:en
 
-
 COPY desktop /desktop/
+COPY wallpapers /usr/local/share/wallpapers/
 
 USER ${USER}
 WORKDIR /home/${USER}

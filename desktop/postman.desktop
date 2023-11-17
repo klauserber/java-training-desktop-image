@@ -1,0 +1,10 @@
+[Desktop Entry]
+Encoding=UTF-8
+Name=Postman
+Exec=/opt/Postman/Postman
+Icon=/opt/Postman/app/icons/icon_128x128.png
+Type=Application
+Categories=Application;Development;
+MimeType=text/html
+Comment=HTTP client
+Keywords=database;db;sql;query;administration;development;
