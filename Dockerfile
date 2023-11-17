@@ -48,7 +48,7 @@ RUN set -e; \
     liquidprompt \
     locales \
     dbus-x11 \
-    kde-plasma-desktop; \
+    kubuntu-desktop; \
   rm -rf /var/lib/apt/lists/*; \
   rm -f /run/reboot-required*
 
@@ -122,6 +122,13 @@ RUN set -e; \
   tar xzf postman.tar.gz; \
   mv Postman /opt/; \
   rm postman.tar.gz
+
+# Install vscode
+RUN set -e; \
+  cd /tmp; \
+  wget -O vscode.deb https://update.code.visualstudio.com/latest/linux-deb-x64/stable; \
+  apt-get update && DEBIAN_FRONTEND="noninteractive" TZ="Europe/Berlin" apt-get install -y ./vscode.deb; \
+  rm vscode.deb && rm -rf /var/lib/apt/lists/*
 
 # # Install spring tool suite
 # # https://spring.io/tools
