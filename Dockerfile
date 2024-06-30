@@ -1,6 +1,4 @@
-FROM ubuntu:mantic-20231011
-# FROM ubuntu:focal-20231003
-# FROM debian:bookworm-20231030
+FROM ubuntu:noble-20240605
 
 ARG TARGETARCH=amd64
 ARG TARGETOS=linux
@@ -65,17 +63,17 @@ RUN set -e; \
 #   update-locale LANG=en_US.UTF-8
 
 # https://hub.docker.com/_/docker/tags
-COPY --from=docker:24.0.6-cli /usr/local/bin/docker /usr/local/bin/docker-compose /usr/local/bin/
+COPY --from=docker:27.0.2-cli /usr/local/bin/docker /usr/local/bin/docker-compose /usr/local/bin/
 # https://hub.docker.com/r/docker/buildx-bin/tags
-COPY --from=docker/buildx-bin:0.11.2 /buildx /usr/libexec/docker/cli-plugins/docker-buildx
+COPY --from=docker/buildx-bin:0.15.1 /buildx /usr/libexec/docker/cli-plugins/docker-buildx
 
 RUN curl -s https://raw.githubusercontent.com/docker/docker-ce/master/components/cli/contrib/completion/bash/docker -o /etc/bash_completion.d/docker.sh
 
 # https://hub.docker.com/_/eclipse-temurin/tags
-COPY --from=eclipse-temurin:21_35-jdk-ubi9-minimal /opt/java/openjdk /opt/java/openjdk
+COPY --from=eclipse-temurin:21.0.3_9-jre-ubi9-minimal /opt/java/openjdk /opt/java/openjdk
 
 # https://github.com/kubernetes/kubernetes/releases
-ARG KUBECTL_VERSION=1.27.4
+ARG KUBECTL_VERSION=1.30.2
 RUN set -e; \
     cd /tmp; \
     curl -sLO "https://dl.k8s.io/release/v${KUBECTL_VERSION}/bin/${TARGETOS}/${TARGETARCH}/kubectl"; \
@@ -83,7 +81,7 @@ RUN set -e; \
     chmod +x /usr/local/bin/kubectl
 
 # https://github.com/helm/helm/releases
-ARG HELM_VERSION=3.12.3
+ARG HELM_VERSION=3.15.2
 RUN set -e; \
   cd /tmp; \
   curl -Ss -o helm.tar.gz https://get.helm.sh/helm-v${HELM_VERSION}-${TARGETOS}-${TARGETARCH}.tar.gz; \
@@ -111,7 +109,7 @@ RUN set -e; \
 # Install pgadmin
 RUN set -e; \
   curl -fsS https://www.pgadmin.org/static/packages_pgadmin_org.pub | sudo gpg --dearmor -o /usr/share/keyrings/packages-pgadmin-org.gpg; \
-  sh -c 'echo "deb [signed-by=/usr/share/keyrings/packages-pgadmin-org.gpg] https://ftp.postgresql.org/pub/pgadmin/pgadmin4/apt/lunar pgadmin4 main" > /etc/apt/sources.list.d/pgadmin4.list'; \
+  sh -c 'echo "deb [signed-by=/usr/share/keyrings/packages-pgadmin-org.gpg] https://ftp.postgresql.org/pub/pgadmin/pgadmin4/apt/noble pgadmin4 main" > /etc/apt/sources.list.d/pgadmin4.list'; \
   apt-get update && DEBIAN_FRONTEND="noninteractive" TZ="Europe/Berlin" apt-get install -y pgadmin4-desktop; \
   rm -rf /var/lib/apt/lists/*
 
